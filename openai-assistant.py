@@ -1,37 +1,38 @@
 import os
-from openai import OpenAI
+from openai import OpenAI, APIError, APIConnectionError, RateLimitError
 from dotenv import load_dotenv
 import time
 
 load_dotenv()
 
-
 # Set your OpenAI API key
-OPENAI_API_TOKEN = os.getenv('OPENAI_API_TOKEN') # 'your_api_key
-
+OPENAI_API_TOKEN = os.getenv('OPENAI_API_TOKEN')
 
 # Initialize the OpenAI client
-client = OpenAI(
-    api_key = OPENAI_API_TOKEN
-)
+client = OpenAI(api_key=OPENAI_API_TOKEN)
 
-
-#load openAi assistant and vector store
 def load_openai_assistant(assistant_id, vs_ID):
+    """Load the OpenAI assistant and create a new thread for interaction."""
     assistant = client.beta.assistants.retrieve(assistant_id)
     thread = client.beta.threads.create(
         tool_resources={
             "file_search": {
-            "vector_store_ids": [vs_ID]
+                "vector_store_ids": [vs_ID]
             }
         }
     )
     return thread, assistant
 
 
-# check in loop  if assistant ai parse our request
 def wait_on_run(run, thread):
+    """Wait for the assistant run to complete or progress to next stage."""
+    idx = 0
     while run.status == "queued" or run.status == "in_progress":
+        
+        print(f"Waiting for assistant response{'.'*idx}", end="\r")
+        
+        idx = (idx + 1) % 4
+        
         run = client.beta.threads.runs.retrieve(
             thread_id=thread.id,
             run_id=run.id,
@@ -39,10 +40,8 @@ def wait_on_run(run, thread):
         time.sleep(0.5)
     return run
 
-
-# initiate assistant ai response
 def get_assistant_response(thread, assistant_id, user_input):
-
+    """Interact with the assistant by sending user input and retrieving the response."""
     message = client.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
@@ -56,31 +55,38 @@ def get_assistant_response(thread, assistant_id, user_input):
 
     run = wait_on_run(run, thread)
 
-    # Retrieve all the messages added after our last user message
     messages = client.beta.threads.messages.list(
         thread_id=thread.id, order="asc", after=message.id
     )
+    try:
+        return messages.data[0].content[0].text.value
+    except IndexError:
+        return "No response from the assistant, please try again."
 
-    return messages.data[0].content[0].text.value
 
-
-#main function
 def main():
     vs_ID = "vs_dOpDSOSZrEYh5YhGcNJS5YLX"
     assistant_id = "asst_FzT6VbdmcKBXMuG9NqHkKyLn"
+
+    print("Welcome! Let's start a conversation with the OpenAI assistant.\n")
+    
     thread, assistant = load_openai_assistant(assistant_id, vs_ID)
     
-    
     while True:
-        user_input = input("You: ")
-        if user_input == "exit":
+        user_input = input("Your message: ")
+        
+        if user_input.lower() == "exit":
             break
-        response = get_assistant_response(thread, assistant_id, user_input)
-        print("Assistant:", response)
+        
+        try:
+            response = get_assistant_response(thread, assistant_id, user_input)
+            print(f"Assistant: {response}\n")
+        except (APIError, APIConnectionError, RateLimitError) as e:
+            print(f"An error occurred during API interaction: {e}")
+            break
         
     print("Exiting...")
-    return
-    
+
+
 if __name__ == "__main__":
     main()
-
