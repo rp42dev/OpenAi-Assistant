@@ -49,8 +49,8 @@ For more details about the OpenAI API and assistants, refer to the [OpenAI API D
 
 ## Example
 
-```bash
-$ python your_script_name.py
+```bash$ python 
+your_script_name.py
 Welcome! Let's start a conversation with the OpenAI assistant.
 
 You: Hello
