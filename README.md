@@ -28,7 +28,7 @@ Before running the script, ensure you have the following installed:
 
 2. **Start Conversation:**
    - Upon running, the script will prompt you to enter a message.
-   - Type your message and press `Enter` to send it to the OpenAI assistant.
+   - Type you and press `Enter` to send it to the OpenAI assistant.
 
 3. **Exit Conversation:**
    - To exit the conversation, type `exit` and press `Enter`.
@@ -54,11 +54,11 @@ Before running the script, ensure you have the following installed:
 $ python your_script_name.py
 Welcome! Let's start a conversation with the OpenAI assistant.
 
-Your message: Hello
+You: Hello
 Assistant: Hi there! How can I assist you today?
 
-Your message: Retrieve information from document
+You: Retrieve information from document
 Assistant: Please provide specific details or keywords from the document you need information about.
 
-Your message: exit
+You: exit
 Exiting...

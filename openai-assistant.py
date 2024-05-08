@@ -11,6 +11,7 @@ OPENAI_API_TOKEN = os.getenv('OPENAI_API_TOKEN')
 # Initialize the OpenAI client
 client = OpenAI(api_key=OPENAI_API_TOKEN)
 
+
 def load_openai_assistant(assistant_id, vs_ID):
     """Load the OpenAI assistant and create a new thread for interaction."""
     assistant = client.beta.assistants.retrieve(assistant_id)
@@ -40,6 +41,7 @@ def wait_on_run(run, thread):
         time.sleep(0.5)
     return run
 
+
 def get_assistant_response(thread, assistant_id, user_input):
     """Interact with the assistant by sending user input and retrieving the response."""
     message = client.beta.threads.messages.create(
@@ -65,21 +67,24 @@ def get_assistant_response(thread, assistant_id, user_input):
 
 
 def main():
-    vs_ID = "vs_dOpDSOSZrEYh5YhGcNJS5YLX"
-    assistant_id = "asst_FzT6VbdmcKBXMuG9NqHkKyLn"
+    """Main function to interact with the OpenAI assistant."""
+    VS_ID = os.getenv('VS_ID_TOKEN')
+    ASSISANT_ID = os.getenv('ASSISANT_ID_TOKEN')
 
-    print("Welcome! Let's start a conversation with the OpenAI assistant.\n")
+    print("Welcome! Let's start a conversation with the OpenAI assistant. Type 'exit' to quit.\n")
     
-    thread, assistant = load_openai_assistant(assistant_id, vs_ID)
+    thread, assistant = load_openai_assistant(ASSISANT_ID, VS_ID)
     
+    # Start the conversation loop
     while True:
-        user_input = input("Your message: ")
+        #i need space after user input 
+        user_input = input("You: ")
         
         if user_input.lower() == "exit":
             break
         
         try:
-            response = get_assistant_response(thread, assistant_id, user_input)
+            response = get_assistant_response(thread, ASSISANT_ID, user_input)
             print(f"Assistant: {response}\n")
         except (APIError, APIConnectionError, RateLimitError) as e:
             print(f"An error occurred during API interaction: {e}")
