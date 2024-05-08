@@ -77,7 +77,6 @@ def main():
     
     # Start the conversation loop
     while True:
-        #i need space after user input 
         user_input = input("You: ")
         
         if user_input.lower() == "exit":

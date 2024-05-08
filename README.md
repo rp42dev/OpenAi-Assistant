@@ -28,7 +28,7 @@ Before running the script, ensure you have the following installed:
 
 2. **Start Conversation:**
    - Upon running, the script will prompt you to enter a message.
-   - Type you and press `Enter` to send it to the OpenAI assistant.
+   - Type your message and press `Enter` to send it to the OpenAI assistant.
 
 3. **Exit Conversation:**
    - To exit the conversation, type `exit` and press `Enter`.
@@ -43,10 +43,9 @@ Before running the script, ensure you have the following installed:
 
 - The script handles API-related errors such as `APIError`, `APIConnectionError`, and `RateLimitError` gracefully.
 
-## Notes
+## OpenAI API Documentation
 
-- Ensure your OpenAI account is properly configured with the necessary permissions and resources.
-- Vector store setup is required to upload documents for information retrieval by the assistant.
+For more details about the OpenAI API and assistants, refer to the [OpenAI API Documentation](https://platform.openai.com/docs/assistants/overview).
 
 ## Example
 
