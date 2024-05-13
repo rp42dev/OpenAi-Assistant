@@ -24,7 +24,7 @@ Before running the script, ensure you have the following installed:
 ## Usage
 
 1. **Run the Script:**
-   - Execute the script by running `python your_script_name.py` in your terminal or IDE.
+   - Execute the script by running `python main.py` in your terminal or IDE.
 
 2. **Start Conversation:**
    - Upon running, the script will prompt you to enter a message.
