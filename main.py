@@ -3,6 +3,15 @@ from conversation import conversation
 from dotenv import load_dotenv
 
 def main():
+    """
+    Main function to initiate a conversation with the OpenAI assistant using environment variables.
+
+    This function loads environment variables from a .env file and retrieves the necessary tokens 
+    (OPENAI_API_TOKEN, ASSISTANT_ID_TOKEN, VS_ID_TOKEN) to start the conversation. If any required 
+    environment variable is missing, it prints an error message and exits. The conversation is 
+    started by calling the conversation function with the retrieved tokens.
+
+    """
     # Load environment variables from .env file
     load_dotenv()
 
@@ -24,4 +33,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

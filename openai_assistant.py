@@ -3,14 +3,40 @@ import logging
 import time
 
 class OpenAIAssistant:
+    """
+    A class representing an interface to interact with OpenAI's assistant service.
+
+    Attributes:
+        client (OpenAI): The OpenAI client instance.
+        thread: The current thread associated with the assistant.
+        assistant: The loaded assistant instance.
+        logger (Logger): Logger instance for logging errors.
+    """
+
     def __init__(self, open_ai_api_key):
+        """
+        Initializes the OpenAIAssistant.
+
+        Args:
+            open_ai_api_key (str): The API key for accessing OpenAI services.
+        """
         self.client = OpenAI(api_key=open_ai_api_key)
         self.thread = None
         self.assistant = None
         self.logger = logging.getLogger(__name__)
 
     def load_openai_assistant(self, assistant_id, vs_id):
-        try:     
+        """
+        Loads the OpenAI assistant and initializes a thread.
+
+        Args:
+            assistant_id (str): The ID of the assistant to load.
+            vs_id (str): The vector store ID for the assistant.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        try:
             self.assistant = self.client.beta.assistants.retrieve(assistant_id)
             self.thread = self.client.beta.threads.create(
                 tool_resources={
@@ -19,11 +45,21 @@ class OpenAIAssistant:
                     }
                 }
             )
+            return True
         except (APIError, APIConnectionError, RateLimitError) as e:
             self.logger.error(f"An error occurred during assistant loading: {e}")
-            return None
+            return False
 
     def wait_on_run(self, run):
+        """
+        Waits for the assistant's run to complete.
+
+        Args:
+            run: The current run object.
+
+        Returns:
+            run: The completed run object.
+        """
         idx = 0
         while run.status in ["queued", "in_progress"]:
             print(f"Waiting for assistant to load...", end="\r")
@@ -40,12 +76,24 @@ class OpenAIAssistant:
         return run
 
     def delete_thread(self):
+        """
+        Deletes the current thread associated with the assistant.
+        """
         try:
             self.client.beta.threads.delete(self.thread.id)
         except (APIError, APIConnectionError, RateLimitError) as e:
             self.logger.error(f"An error occurred during thread deletion: {e}")
 
     def get_assistant_response(self, user_input):
+        """
+        Gets a response from the OpenAI assistant for the given user input.
+
+        Args:
+            user_input (str): The user's input.
+
+        Returns:
+            str: The assistant's response or an error message.
+        """
         try:
             message = self.client.beta.threads.messages.create(
                 thread_id=self.thread.id,
@@ -66,4 +114,3 @@ class OpenAIAssistant:
         except (APIError, APIConnectionError, RateLimitError, IndexError) as e:
             self.logger.error(f"An error occurred during assistant response retrieval: {e}")
             return "An error occurred, please try again later."
-
