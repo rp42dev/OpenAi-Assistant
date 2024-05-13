@@ -42,6 +42,11 @@ def wait_on_run(run, thread):
     return run
 
 
+def delete_thread(thread):
+    """Delete the thread to clean up resources."""
+    client.beta.threads.delete(thread.id)
+
+
 def get_assistant_response(thread, assistant_id, user_input):
     """Interact with the assistant by sending user input and retrieving the response."""
     message = client.beta.threads.messages.create(
@@ -90,6 +95,7 @@ def main():
             break
         
     print("Exiting...")
+    delete_thread(thread)
 
 
 if __name__ == "__main__":

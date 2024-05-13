@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 *.txt
+
+i_am_mobile_friendly_assistant.md
